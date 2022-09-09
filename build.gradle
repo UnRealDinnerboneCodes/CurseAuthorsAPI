@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+    id "maven-publish"
+    id 'java-library'
+}
+
+apply from: 'https://raw.githubusercontent.com/UnRealDinnerbone/GradleHelpers/helpers/base.gradle'
+
+configurations {
+    api
+    implementation.extendsFrom api
+    apiElements.extendsFrom api
+}
+
+dependencies {
+    implementation "com.unrealdinnerbone:UnRealLib:4.0.0+build.122"
+    testCompileOnly group: 'junit', name: 'junit', version: '4.4'
+}
