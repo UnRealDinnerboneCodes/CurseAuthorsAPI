@@ -1,3 +1,9 @@
 package com.unrealdinnerbone.curseauthorsapi.api;
 
-public record LastMonthDownloadsData(long downloadDate, long totalDownloads) {}
+import java.time.Instant;
+
+public record LastMonthDownloadsData(long downloadDate, long totalDownloads) {
+    public Instant getDownloadDate() {
+        return Instant.ofEpochMilli(downloadDate);
+    }
+}

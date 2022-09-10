@@ -1,4 +1,3 @@
 package com.unrealdinnerbone.curseauthorsapi.api;
 
-public record DownloadsTotalData(int total) {
-}
+public record DownloadsTotalData(int total) {}

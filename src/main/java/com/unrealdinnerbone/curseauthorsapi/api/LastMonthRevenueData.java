@@ -1,3 +1,9 @@
 package com.unrealdinnerbone.curseauthorsapi.api;
 
-public record LastMonthRevenueData(long revenueDate, long revenue) {}
+import java.time.Instant;
+
+public record LastMonthRevenueData(long revenueDate, long revenue) {
+    public Instant getRevenueDate() {
+        return Instant.ofEpochMilli(revenueDate);
+    }
+}
