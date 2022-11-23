@@ -10,7 +10,10 @@ import com.unrealdinnerbone.unreallib.json.JsonUtil;
 import com.unrealdinnerbone.unreallib.json.api.DataString;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CurseAuthorsAPI {
@@ -44,7 +47,8 @@ public class CurseAuthorsAPI {
     @NotNull
     public static IReturnResult<List<TransactionData>> getTransactions() {
         //Todo fix this
-        return getData(TransactionData[].class, "transactions?filter=%7B%7D&sort=%5B\"DateCreated\"%2C\"DESC\"%5D");
+        String url = "transactions?" + "filter=%7B%7D&sort=%5B%22DateCreated%22,%22DESC%22%5D";
+        return getDataDirect(TransactionData[].class, url);
     }
 
     public static IReturnResult<ProjectsBreakdownData> getBreakdown(long id) {
@@ -129,15 +133,17 @@ public class CurseAuthorsAPI {
         }
     }
 
-    private static @NotNull <T> IReturnResult<T> getDirectData(Class<T> tClass, String base) {
+    private static @NotNull <T> IReturnResult<List<T>> getDataDirect(Class<T[]> tClass, String base) {
         try {
-            IReturnResult<ReturnObject> result = CurseforgeAuthorsAPIUtils.get(ReturnObject.class, base);
-            ReturnObject returnObject = result.getExceptionally();
-            T data = JsonUtil.DEFAULT.parse(tClass, returnObject.queryResult().data());
-            return new DirectResult<>(data);
+            @NotNull IReturnResult<T[]> result = CurseforgeAuthorsAPIUtils.get(tClass, base);
+            return new DirectResult<>(Arrays.asList(result.getExceptionally()));
         } catch (JsonParseException e) {
             return IReturnResult.createException(e);
         }
+    }
+
+    private static @NotNull <T> IReturnResult<T> getDirectData(Class<T> tClass, String base) {
+        return CurseforgeAuthorsAPIUtils.get(tClass, base);
     }
 
 
