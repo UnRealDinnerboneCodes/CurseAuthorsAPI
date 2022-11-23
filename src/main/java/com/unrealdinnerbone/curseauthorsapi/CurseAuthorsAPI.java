@@ -18,27 +18,42 @@ public class CurseAuthorsAPI {
 
     @NotNull
     public static IReturnResult<QueryResult<RevenueEstimationData>> getEstimatedRevenue() {
-        return getQueryResult(RevenueEstimationData[].class, "revenueEstimation");
+        return getQueryResult(RevenueEstimationData[].class, "statistics/queries/revenueEstimation");
     }
 
     @NotNull
     public static IReturnResult<QueryResult<DownloadsTotalData>> getTotalDownloads() {
-        return getQueryResult(DownloadsTotalData[].class, "downloadsTotal");
+        return getQueryResult(DownloadsTotalData[].class, "statistics/queries/downloadsTotal");
     }
 
     @NotNull
     public static IReturnResult<List<LastMonthDownloadsData>> getLastMonthDownloads() {
-        return getData(LastMonthDownloadsData[].class, "lastMonthDownloads");
+        return getData(LastMonthDownloadsData[].class, "statistics/queries/lastMonthDownloads");
     }
 
     @NotNull
     public static IReturnResult<List<LastMonthRevenueData>> getLastMonthRevenue() {
-        return getData(LastMonthRevenueData[].class, "lastMonthRevenue");
+        return getData(LastMonthRevenueData[].class, "statistics/queries/lastMonthRevenue");
+    }
+
+    @NotNull
+    public static IReturnResult<UserPointData> getUserPoints() {
+        return getDirectData(UserPointData.class, "reward-store/user-points");
+    }
+
+    @NotNull
+    public static IReturnResult<List<TransactionData>> getTransactions() {
+        //Todo fix this
+        return getData(TransactionData[].class, "transactions?filter=%7B%7D&sort=%5B\"DateCreated\"%2C\"DESC\"%5D");
+    }
+
+    public static IReturnResult<ProjectsBreakdownData> getBreakdown(long id) {
+        return getDirectData(ProjectsBreakdownData.class, "transactions/breakdown/" + id);
     }
 
     @NotNull
     public static IReturnResult<List<ProjectRevenueData>> getRevenue() {
-        IReturnResult<List<Map<String, Long>>> theMap = getMap("revenue");
+        IReturnResult<List<Map<String, Long>>> theMap = getMap("statistics/queries/revenue");
         try {
             List<ProjectRevenueData> data = new ArrayList<>();
             for (Map<String, Long> downloadMap : theMap.getExceptionally()) {
@@ -57,7 +72,7 @@ public class CurseAuthorsAPI {
 
     @NotNull
     public static IReturnResult<List<ProjectDownloadData>> getDownloads() {
-        IReturnResult<List<Map<String, Long>>> theMap = getMap("downloads");
+        IReturnResult<List<Map<String, Long>>> theMap = getMap("statistics/queries/downloads");
         try {
             List<ProjectDownloadData> data = new ArrayList<>();
             for (Map<String, Long> downloadMap : theMap.getExceptionally()) {
@@ -94,7 +109,9 @@ public class CurseAuthorsAPI {
             IReturnResult<ReturnObject> result = CurseforgeAuthorsAPIUtils.get(ReturnObject.class, base);
             ReturnObject returnObject = result.getExceptionally();
             T[] data = JsonUtil.DEFAULT.parse(tClass, returnObject.queryResult().data());
-            QueryResult<T> queryResult = new QueryResult<>(Arrays.stream(data).findFirst().orElseThrow(() -> new JsonParseException(new IllegalStateException("No Data Found"))), returnObject.queryResult().retrievedAt());
+            QueryResult<T> queryResult = new QueryResult<>(Arrays.stream(data)
+                    .findFirst()
+                    .orElseThrow(() -> new JsonParseException(new IllegalStateException("No Data Found"))), returnObject.queryResult().retrievedAt());
             return new DirectResult<>(queryResult);
         } catch (JsonParseException e) {
             return IReturnResult.createException(e);
@@ -107,6 +124,17 @@ public class CurseAuthorsAPI {
             ReturnObject returnObject = result.getExceptionally();
             T[] data = JsonUtil.DEFAULT.parse(tClass, returnObject.queryResult().data());
             return new DirectResult<>(Arrays.asList(data));
+        } catch (JsonParseException e) {
+            return IReturnResult.createException(e);
+        }
+    }
+
+    private static @NotNull <T> IReturnResult<T> getDirectData(Class<T> tClass, String base) {
+        try {
+            IReturnResult<ReturnObject> result = CurseforgeAuthorsAPIUtils.get(ReturnObject.class, base);
+            ReturnObject returnObject = result.getExceptionally();
+            T data = JsonUtil.DEFAULT.parse(tClass, returnObject.queryResult().data());
+            return new DirectResult<>(data);
         } catch (JsonParseException e) {
             return IReturnResult.createException(e);
         }
