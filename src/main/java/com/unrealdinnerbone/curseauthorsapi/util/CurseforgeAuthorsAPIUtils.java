@@ -1,8 +1,9 @@
 package com.unrealdinnerbone.curseauthorsapi.util;
 
 import com.unrealdinnerbone.unreallib.apiutils.APIUtils;
-import com.unrealdinnerbone.unreallib.apiutils.IReturnResult;
-import com.unrealdinnerbone.unreallib.web.HttpHelper;
+import com.unrealdinnerbone.unreallib.apiutils.IResult;
+import com.unrealdinnerbone.unreallib.apiutils.ResponseData;
+import com.unrealdinnerbone.unreallib.json.JsonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.CookieManager;
@@ -12,26 +13,19 @@ import java.net.http.HttpClient;
 
 public class CurseforgeAuthorsAPIUtils {
 
-    private static final String BASE_URL = System.getenv().getOrDefault("AUTHORS_API_URL", "https://authors-next.curseforge.com/_api/");
+    private static final String BASE_URL = System.getenv().getOrDefault("AUTHORS_API_URL", "https://authors-next.curseforge.com" +
+            "");
     private static final String COOKIE = System.getenv().getOrDefault("AUTHORS_COOKIE", "");
 
-    public static final HttpHelper HTTP_HELPER = new CurseHttpHelper();
+    public static final HttpClient CLIENT = createClient();
 
     @NotNull
-    public static <T> IReturnResult<T> get(Class<T> tClass, String urlData) {
-        return APIUtils.get(HTTP_HELPER, tClass, BASE_URL + urlData);
+    public static <T> IResult<T> get(Class<T> tClass, String urlData) {
+        return APIUtils.getResult(CLIENT, tClass, BASE_URL + urlData, JsonUtil.DEFAULT)
+                .map(ResponseData::data);
     }
 
 
-
-    private static class CurseHttpHelper extends HttpHelper {
-
-
-        public CurseHttpHelper() {
-            super(createClient(), "Java");
-        }
-
-    }
 
     private static HttpClient createClient() {
         CookieManager cookieManager = new CookieManager();
