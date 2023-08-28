@@ -43,6 +43,11 @@ public class CurseAuthorsAPI {
     }
 
     @NotNull
+    public static IResult<RewardStoreData> getRewardStore() {
+        return getDirectData(RewardStoreData.class, "reward-store");
+    }
+
+    @NotNull
     public static IResult<List<TransactionData>> getTransactions() {
         //Todo fix this
         String url = "transactions?" + "filter=%7B%7D&sort=%5B%22DateCreated%22,%22DESC%22%5D";
