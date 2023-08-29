@@ -100,12 +100,15 @@ public class CurseAuthorsAPI {
 
 
 
-    //Todo fix this
     private static @NotNull <T> IResult<QueryResult<T>> getQueryResult(Class<T[]> tClass, String base) {
         return CurseforgeAuthorsAPIUtils.get(ReturnObject.class, base)
-                .map((returnObject) -> new QueryResult<>(Arrays.stream(JsonUtil.DEFAULT.parse(tClass, returnObject.queryResult().data().json()))
-                        .findFirst()
-                        .orElseThrow(() -> new JsonParseException(new IllegalStateException("No Data Found"))), "FixMe"));
+                .map((returnObject) -> {
+                    String json = returnObject.queryResult().data().json();
+                    T[] parse = JsonUtil.DEFAULT.parse(tClass, json);
+                    return new QueryResult<>(Arrays.stream(parse)
+                            .findFirst()
+                            .orElseThrow(() -> new JsonParseException(new IllegalStateException("No Data Found"))), returnObject.queryResult().retrievedAt());
+                });
     }
 
     private static @NotNull <T> IResult<List<T>> getData(Class<T[]> tClass, String base) {
