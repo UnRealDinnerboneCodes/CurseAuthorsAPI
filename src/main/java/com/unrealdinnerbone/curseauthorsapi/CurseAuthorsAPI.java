@@ -3,7 +3,7 @@ package com.unrealdinnerbone.curseauthorsapi;
 import com.unrealdinnerbone.curseauthorsapi.api.*;
 import com.unrealdinnerbone.curseauthorsapi.api.base.QueryResult;
 import com.unrealdinnerbone.curseauthorsapi.util.CurseforgeAuthorsAPIUtils;
-import com.unrealdinnerbone.unreallib.apiutils.IResult;
+import com.unrealdinnerbone.unreallib.apiutils.result.IResult;
 import com.unrealdinnerbone.unreallib.json.JsonUtil;
 import com.unrealdinnerbone.unreallib.json.api.JsonString;
 import com.unrealdinnerbone.unreallib.json.exception.JsonParseException;

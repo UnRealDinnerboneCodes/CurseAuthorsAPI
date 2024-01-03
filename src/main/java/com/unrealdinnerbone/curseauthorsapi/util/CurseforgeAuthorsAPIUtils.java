@@ -1,11 +1,8 @@
 package com.unrealdinnerbone.curseauthorsapi.util;
 
 import com.unrealdinnerbone.unreallib.apiutils.APIUtils;
-import com.unrealdinnerbone.unreallib.apiutils.IResult;
-import com.unrealdinnerbone.unreallib.apiutils.ResponseData;
-import com.unrealdinnerbone.unreallib.exception.ExceptionFunction;
+import com.unrealdinnerbone.unreallib.apiutils.result.IResult;
 import com.unrealdinnerbone.unreallib.json.JsonUtil;
-import com.unrealdinnerbone.unreallib.json.exception.JsonParseException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,19 +23,7 @@ public class CurseforgeAuthorsAPIUtils {
 
     @NotNull
     public static <T> IResult<T> get(Class<T> tClass, String urlData) {
-        IResult<ResponseData<T>> result = APIUtils.getResult(CLIENT, tClass, BASE_URL + urlData, JsonUtil.DEFAULT);
-        return result
-                .map(new ExceptionFunction<JsonParseException, ResponseData<T>, T>() {
-                    @Override
-                    public T apply(ResponseData<T> tResponseData) throws JsonParseException {
-                        if(tResponseData.statusCode() != 200) {
-                            JsonParseException jsonParseException = new JsonParseException("Not Vaild Response Code: " + tResponseData.statusCode());
-                            LOGGER.error("Not 200 " + tResponseData.data().toString(), tResponseData);
-                            throw jsonParseException;
-                        }
-                        return tResponseData.data();
-                    }
-                });
+        return APIUtils.getJson(CLIENT, tClass, BASE_URL + urlData, JsonUtil.DEFAULT);
     }
 
 
