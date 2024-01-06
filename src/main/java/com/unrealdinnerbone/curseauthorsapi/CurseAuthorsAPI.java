@@ -4,7 +4,6 @@ import com.unrealdinnerbone.curseauthorsapi.api.*;
 import com.unrealdinnerbone.curseauthorsapi.api.base.QueryResult;
 import com.unrealdinnerbone.curseauthorsapi.util.CurseforgeAuthorsAPIUtils;
 import com.unrealdinnerbone.unreallib.apiutils.result.IResult;
-import com.unrealdinnerbone.unreallib.json.JsonUtil;
 import com.unrealdinnerbone.unreallib.json.api.JsonString;
 import com.unrealdinnerbone.unreallib.json.exception.JsonParseException;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +49,7 @@ public class CurseAuthorsAPI {
     @NotNull
     public static IResult<List<TransactionData>> getTransactions() {
         //Todo fix this
-        String url = "transactions?" + "filter=%7B%7D&sort=%5B%22DateCreated%22,%22DESC%22%5D";
+        String url = "transactions?" + "filter=%7B%7D";
         return getDataDirect(TransactionData[].class, url);
     }
 
@@ -104,7 +103,7 @@ public class CurseAuthorsAPI {
         return CurseforgeAuthorsAPIUtils.get(ReturnObject.class, base)
                 .map((returnObject) -> {
                     String json = returnObject.queryResult().data().json();
-                    T[] parse = JsonUtil.DEFAULT.parse(tClass, json);
+                    T[] parse = CurseforgeAuthorsAPIUtils.PARSER.parse(tClass, json);
                     return new QueryResult<>(Arrays.stream(parse)
                             .findFirst()
                             .orElseThrow(() -> new JsonParseException(new IllegalStateException("No Data Found"))), returnObject.queryResult().retrievedAt());
@@ -114,7 +113,7 @@ public class CurseAuthorsAPI {
     private static @NotNull <T> IResult<List<T>> getData(Class<T[]> tClass, String base) {
         return CurseforgeAuthorsAPIUtils.get(ReturnObject.class, base)
                 .map((returnObject) ->
-                        Arrays.asList(JsonUtil.DEFAULT.parse(tClass, returnObject.queryResult().data().json())));
+                        Arrays.asList(CurseforgeAuthorsAPIUtils.PARSER.parse(tClass, returnObject.queryResult().data().json())));
     }
 
     private static <T> IResult<List<T>> getDataDirect(Class<T[]> tClass, String base) {

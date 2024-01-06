@@ -1,8 +1,11 @@
 package com.unrealdinnerbone.curseauthorsapi.util;
 
+import com.unrealdinnerbone.curseauthorsapi.api.TransactionData;
 import com.unrealdinnerbone.unreallib.apiutils.APIUtils;
 import com.unrealdinnerbone.unreallib.apiutils.result.IResult;
 import com.unrealdinnerbone.unreallib.json.JsonUtil;
+import com.unrealdinnerbone.unreallib.json.gson.GsonParser;
+import com.unrealdinnerbone.unreallib.json.gson.parsers.basic.IIDJsonAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +18,17 @@ import java.net.http.HttpClient;
 public class CurseforgeAuthorsAPIUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CurseforgeAuthorsAPIUtils.class);
-    private static final String BASE_URL = System.getenv().getOrDefault("AUTHORS_API_URL", "https://authors-next.curseforge.com" +
+    private static final String BASE_URL = System.getenv().getOrDefault("AUTHORS_API_URL", "https://authors.curseforge.com/_api/" +
             "");
     private static final String COOKIE = System.getenv().getOrDefault("AUTHORS_COOKIE", "");
 
     public static final HttpClient CLIENT = createClient();
 
+    public static final GsonParser PARSER = JsonUtil.createParser(gsonBuilder -> gsonBuilder.registerTypeAdapter(TransactionData.Type.class, new IIDJsonAdapter<>(TransactionData.Type.values())));
+
     @NotNull
     public static <T> IResult<T> get(Class<T> tClass, String urlData) {
-        return APIUtils.getJson(CLIENT, tClass, BASE_URL + urlData, JsonUtil.DEFAULT);
+        return APIUtils.getJson(CLIENT, tClass, BASE_URL + urlData, PARSER);
     }
 
 
