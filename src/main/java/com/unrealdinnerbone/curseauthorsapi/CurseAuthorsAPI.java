@@ -57,8 +57,8 @@ public class CurseAuthorsAPI {
         return getDirectData(ProjectsBreakdownData.class, "transactions/breakdown/" + id);
     }
 
-    public static IResult<Project> getProjects() {
-        return getDirectData(Project.class, "projects?filter={}");
+    public static IResult<List<Project>> getProjects() {
+        return getDataDirect(Project[].class, "projects?filter={}");
     }
 
     @NotNull
