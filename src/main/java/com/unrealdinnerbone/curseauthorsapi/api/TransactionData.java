@@ -17,9 +17,11 @@ public record TransactionData(long id, double pointChange, Type type, OrderData 
         TRANSFER_IN(3),
         PLACED(5),
         FULFILLED(8),
-
+        EXPIRED(7),
         PAYPAL_OLD(6),
         PAYPAL(11),
+
+        UNKNOWN(-1)
         ;
 
         private final int id;

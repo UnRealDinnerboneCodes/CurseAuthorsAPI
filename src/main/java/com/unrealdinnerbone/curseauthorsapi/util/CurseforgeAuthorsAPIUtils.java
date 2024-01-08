@@ -1,5 +1,6 @@
 package com.unrealdinnerbone.curseauthorsapi.util;
 
+import com.google.gson.stream.JsonReader;
 import com.unrealdinnerbone.curseauthorsapi.api.TransactionData;
 import com.unrealdinnerbone.unreallib.apiutils.APIUtils;
 import com.unrealdinnerbone.unreallib.apiutils.result.IResult;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.CookieManager;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -24,7 +26,17 @@ public class CurseforgeAuthorsAPIUtils {
 
     public static final HttpClient CLIENT = createClient();
 
-    public static final GsonParser PARSER = JsonUtil.createParser(gsonBuilder -> gsonBuilder.registerTypeAdapter(TransactionData.Type.class, new IIDJsonAdapter<>(TransactionData.Type.values())));
+    public static final GsonParser PARSER = JsonUtil.createParser(gsonBuilder -> gsonBuilder.registerTypeAdapter(TransactionData.Type.class, new IIDJsonAdapter<>(TransactionData.Type.values()) {
+        @Override
+        public Enum read(JsonReader in) throws IOException {
+            try {
+                return super.read(in);
+            }catch (Exception e) {
+                LOGGER.error("Failed to parse TransactionData.Type", e);
+                return TransactionData.Type.UNKNOWN;
+            }
+        }
+    }));
 
     @NotNull
     public static <T> IResult<T> get(Class<T> tClass, String urlData) {
