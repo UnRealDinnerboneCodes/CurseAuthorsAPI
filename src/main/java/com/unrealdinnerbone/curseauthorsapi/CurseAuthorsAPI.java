@@ -57,6 +57,10 @@ public class CurseAuthorsAPI {
         return getDirectData(ProjectsBreakdownData.class, "transactions/breakdown/" + id);
     }
 
+    public static IResult<Project> getProjects() {
+        return getDirectData(Project.class, "projects?filter={}");
+    }
+
     @NotNull
     public static IResult<List<ProjectRevenueData>> getRevenue() {
         return getMap("statistics/queries/revenue").map(maps -> {
