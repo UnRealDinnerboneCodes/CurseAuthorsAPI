@@ -26,9 +26,18 @@ public class CurseforgeAuthorsAPIUtils {
 
     public static final HttpClient CLIENT = createClient();
 
-    public static final GsonParser PARSER = JsonUtil.createParser(gsonBuilder -> gsonBuilder.registerTypeAdapter(TransactionData.Type.class, new IIDJsonAdapter<>(TransactionData.Type.values()) {
+    public static final GsonParser PARSER = JsonUtil.createParser(gsonBuilder -> gsonBuilder.registerTypeAdapter(TransactionData.Type.class, new FixAd(TransactionData.Type.values()) {
+
+    }));
+
+    public static class FixAd extends IIDJsonAdapter<TransactionData.Type> {
+
+        public FixAd(Object[] enumConstants) {
+            super(enumConstants);
+        }
+
         @Override
-        public Enum read(JsonReader in) throws IOException {
+        public TransactionData.Type read(JsonReader in) throws IOException {
             try {
                 return super.read(in);
             }catch (Exception e) {
@@ -36,7 +45,7 @@ public class CurseforgeAuthorsAPIUtils {
                 return TransactionData.Type.UNKNOWN;
             }
         }
-    }));
+    }
 
     @NotNull
     public static <T> IResult<T> get(Class<T> tClass, String urlData) {
