@@ -12,7 +12,7 @@ public class FilterBuilder
         return "%7B" + filter
                 .entrySet()
                 .stream()
-                .map(entry -> "\"" + entry.getKey() + "\":\"" + entry.getValue() + "\"")
+                .map(entry -> "%22" + entry.getKey() + "%22:%22" + entry.getValue() + "%22")
                 .collect(Collectors.joining(","))
                 + "%7D";
     }
