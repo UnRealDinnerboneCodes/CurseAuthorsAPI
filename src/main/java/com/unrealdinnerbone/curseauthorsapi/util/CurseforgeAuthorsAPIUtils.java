@@ -20,8 +20,7 @@ import java.net.http.HttpClient;
 public class CurseforgeAuthorsAPIUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CurseforgeAuthorsAPIUtils.class);
-    private static final String BASE_URL = System.getenv().getOrDefault("AUTHORS_API_URL", "https://authors.curseforge.com/_api/" +
-            "");
+    private static final String BASE_URL = System.getenv().getOrDefault("AUTHORS_API_URL", "https://authors.curseforge.com/_api/");
     private static final String COOKIE = System.getenv().getOrDefault("AUTHORS_COOKIE", "");
 
     public static final HttpClient CLIENT = createClient();
@@ -37,7 +36,7 @@ public class CurseforgeAuthorsAPIUtils {
         }
 
         @Override
-        public TransactionData.Type read(JsonReader in) throws IOException {
+        public TransactionData.Type read(JsonReader in) {
             try {
                 return super.read(in);
             }catch (Exception e) {

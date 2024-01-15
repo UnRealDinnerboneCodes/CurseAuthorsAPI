@@ -3,15 +3,14 @@ package com.unrealdinnerbone.curseauthorsapi;
 import com.unrealdinnerbone.curseauthorsapi.api.*;
 import com.unrealdinnerbone.curseauthorsapi.api.base.QueryResult;
 import com.unrealdinnerbone.curseauthorsapi.util.CurseforgeAuthorsAPIUtils;
+import com.unrealdinnerbone.curseauthorsapi.util.FilterBuilder;
 import com.unrealdinnerbone.unreallib.apiutils.result.IResult;
 import com.unrealdinnerbone.unreallib.json.api.JsonString;
 import com.unrealdinnerbone.unreallib.json.exception.JsonParseException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CurseAuthorsAPI {
@@ -48,9 +47,11 @@ public class CurseAuthorsAPI {
 
     @NotNull
     public static IResult<List<TransactionData>> getTransactions() {
-        //Todo fix this
-        String url = "transactions?" + "filter=%7B%7D";
-        return getDataDirect(TransactionData[].class, url);
+        return getDataDirect(TransactionData[].class, "transactions?filter=" + FilterBuilder.EMPTY_FILTER);
+    }
+
+    public static IResult<List<File>> getProjectFiles(int projectId) {
+        return getDataDirect(File[].class, "project-files?filter=" + FilterBuilder.buildFilter(Map.of("projectId", String.valueOf(projectId))));
     }
 
     public static IResult<ProjectsBreakdownData> getBreakdown(long id) {
@@ -58,7 +59,7 @@ public class CurseAuthorsAPI {
     }
 
     public static IResult<List<Project>> getProjects() {
-        return getDataDirect(Project[].class, "projects?filter={}");
+        return getDataDirect(Project[].class, "projects?filter=" + FilterBuilder.EMPTY_FILTER);
     }
 
     @NotNull
