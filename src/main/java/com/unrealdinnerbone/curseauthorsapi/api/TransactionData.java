@@ -20,6 +20,7 @@ public record TransactionData(long id, double pointChange, Type type, OrderData 
         EXPIRED(7),
         PAYPAL_OLD(6),
         PAYPAL(11),
+        TREMENDOUS(12),
 
         UNKNOWN(-1)
         ;

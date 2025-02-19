@@ -8,5 +8,7 @@ public record Project(int id,
                       String slug,
                       String avatarUrl,
                       String role,
+
+                      int[] userPermissionIds,
                       int status) {
 }
