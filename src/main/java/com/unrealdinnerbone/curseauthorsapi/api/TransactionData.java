@@ -9,8 +9,7 @@ public record TransactionData(long id, double pointChange, Type type, OrderData 
     public Instant getDateCreated() {
         return Instant.parse(dateCreated);
     }
-
-
+    
     public enum Type implements IID {
         REWARD(1),
         TRANSFER_OUT(2),
@@ -21,6 +20,7 @@ public record TransactionData(long id, double pointChange, Type type, OrderData 
         PAYPAL_OLD(6),
         PAYPAL(11),
         TREMENDOUS(12),
+        SERVER_POINTS(13),
 
         UNKNOWN(-1)
         ;
