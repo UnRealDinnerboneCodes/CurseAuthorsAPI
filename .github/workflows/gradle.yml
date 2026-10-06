@@ -14,7 +14,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'adopt'
-          cache: 'gradle'
       - name: Build with Gradle
         env:
           KEY: ${{secrets.github_token}}
